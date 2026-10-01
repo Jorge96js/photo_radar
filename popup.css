@@ -1,0 +1,500 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   popup.css  –  Photo radar Chrome Extension
+   Sistema de Variables CSS Centralizado – Colores Sólidos (Sin Degradados)
+ ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Google Fonts ──────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ── Catálogo de Variables CSS ─────────────────────────────────────────── */
+:root {
+  /* ── 1. Paleta de Marca Base y Acentos Sólidos ── */
+  --c-primary:           #B11226;  /* Crimson principal */
+  --c-primary-light:     #E11D48;  /* Ruby vivo para glows, acentos y hover */
+  --c-primary-dark:      #5A0B16;  /* Borgoña profundo */
+  --c-wine-black:        #1A070B;  /* Tinte vino oscuro para encabezado */
+  
+  /* ── 2. Superficies y Fondos Sólidos ── */
+  --c-dark-obsidian:     #0D0E12;  /* Fondo base ultra-oscuro */
+  --c-dark-surface:      #121319;  /* Superficie de toolbar y controles */
+  --c-dark-card:         #1A1B23;  /* Fondo base de tarjetas */
+  --c-dark-card-hover:   #232532;  /* Hover en tarjetas */
+  --c-dark-footer:       #14151C;  /* Fondo sólido de footer */
+
+  /* ── 3. Tipografía y Textos ── */
+  --c-text-bright:       #F2F2F4;  /* Blanco plateado principal */
+  --c-text-muted:        #9CA3AF;  /* Gris medio legible para subtítulos */
+  --c-text-subtle:       #6B7280;  /* Gris atenuado */
+  --c-text-rose:         #FDA4AF;  /* Rosa suave para badges y acentos */
+
+  /* ── 4. Bordes y Separadores ── */
+  --border-subtle:       rgba(255, 255, 255, 0.08);
+  --border-hover:        rgba(225, 29, 72, 0.40);
+  --border-card-selected:var(--c-primary);
+
+  /* ── 5. Mapeo Semántico (Colores Sólidos) ── */
+  --bg-main:             var(--c-dark-obsidian);
+  --bg-header:           var(--c-wine-black);
+  --bg-toolbar:          var(--c-dark-surface);
+  --bg-footer:           var(--c-dark-footer);
+  --bg-card:             var(--c-dark-card);
+  --bg-card-hover:       var(--c-dark-card-hover);
+  --bg-scrollbar-thumb:  #3D0910;
+  --bg-scrollbar-hover:  var(--c-primary);
+
+  --text-primary:        var(--c-text-bright);
+  --text-secondary:      var(--c-text-muted);
+  --text-muted:          var(--c-text-subtle);
+  --text-inverse:        #FFFFFF;
+
+  /* ── 6. Estados Semánticos ── */
+  --danger-color:        #FB7185;
+  --danger-bg-dim:       rgba(244, 63, 94, 0.12);
+  --danger-bg-hover:     rgba(244, 63, 94, 0.22);
+  --danger-border:       rgba(244, 63, 94, 0.28);
+
+  --success-color:       #34D399;
+  --success-bg-toast:    #1B1C24;
+  --success-border-toast:rgba(52, 211, 153, 0.35);
+
+  /* ── 7. Botones Específicos ── */
+  --btn-ghost-bg:        rgba(255, 255, 255, 0.05);
+  --btn-ghost-text:      var(--c-text-bright);
+  --btn-ghost-border:    rgba(255, 255, 255, 0.10);
+  --btn-ghost-hover-bg:  rgba(255, 255, 255, 0.12);
+  --btn-ghost-hover-text:#FFFFFF;
+
+  --btn-primary-bg:      var(--c-primary);
+  --btn-primary-hover-bg:var(--c-primary-light);
+  --btn-primary-text:    #FFFFFF;
+  --btn-primary-shadow:  rgba(177, 18, 38, 0.40);
+
+  --btn-zip-border:      rgba(225, 29, 72, 0.40);
+  --btn-zip-text:        var(--c-text-rose);
+  --btn-zip-hover-bg:    rgba(225, 29, 72, 0.18);
+
+  /* ── 8. Tarjetas y Overlays ── */
+  --card-overlay-selected: rgba(225, 29, 72, 0.18);
+  --card-open-btn-bg:      rgba(13, 14, 18, 0.80);
+  --card-open-btn-border:  rgba(255, 255, 255, 0.20);
+  --card-check-border:     rgba(255, 255, 255, 0.45);
+
+  /* ── 9. Redondeos y Sombras ── */
+  --radius-sm:  6px;
+  --radius-md:  10px;
+  --radius-lg:  16px;
+  --shadow-card:       0 6px 18px rgba(0, 0, 0, 0.50);
+  --shadow-card-sel:   0 0 0 2px var(--c-primary-light), 0 6px 20px rgba(225, 29, 72, 0.35);
+  --shadow-brand-icon: 0 0 12px rgba(225, 29, 72, 0.40);
+
+  /* ── 10. Transiciones ── */
+  --t-fast: 150ms ease;
+  --t-std:  220ms ease;
+}
+
+/* ── Reset ─────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Base ──────────────────────────────────────────────────────────────── */
+html {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  color: var(--text-primary);
+  background: var(--bg-main);
+  width: 500px;
+  min-height: 120px;
+  max-height: 600px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+}
+
+body {
+  width: 100%;
+  min-height: 120px;
+  max-height: 600px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-main);
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bg-scrollbar-thumb); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--bg-scrollbar-hover); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   HEADER
+══════════════════════════════════════════════════════════════════════════ */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--c-dark-card-hover);
+  border-bottom: 1px solid var(--c-dark-card-hover);
+  flex-shrink: 0;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-icon {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.brand-name {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  color: #FFFFFF;
+}
+
+/* Badge contador */
+.badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--c-text-rose);
+  background: var(--c-primary-dark);
+  border: 1px solid var(--bg-scrollbar-thumb);
+  border-radius: 3px;
+  padding: 3px 10px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   TOOLBAR
+══════════════════════════════════════════════════════════════════════════ */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: var(--bg-toolbar);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  flex-shrink: 0;
+  width: auto;
+}
+
+.toolbar-spacer { flex: 1; }
+
+/* ── Buttons base ──────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 500;
+  transition: background var(--t-fast), border-color var(--t-fast), opacity var(--t-fast), transform var(--t-fast), box-shadow var(--t-fast);
+  white-space: nowrap;
+  outline-offset: 2px;
+}
+.btn:active:not(:disabled) { transform: scale(0.96); }
+.btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* Sizes */
+.btn-sm  { font-size: 12px; padding: 5px 10px; }
+.btn-md  { font-size: 13px; padding: 8px 16px; }
+
+/* Variants */
+.btn-ghost {
+  background: var(--btn-ghost-bg);
+  color: var(--btn-ghost-text);
+  border: 1px solid var(--btn-ghost-border);
+}
+.btn-ghost:hover:not(:disabled) {
+  background: var(--btn-ghost-hover-bg);
+  color: var(--btn-ghost-hover-text);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.btn-screenshot {
+  background: rgba(225, 29, 72, 0.14);
+  color: var(--c-text-rose);
+  border: 1px solid rgba(225, 29, 72, 0.35);
+}
+.btn-screenshot:hover:not(:disabled) {
+  background: rgba(225, 29, 72, 0.26);
+  color: #FFFFFF;
+}
+
+.btn-outline {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+.btn-outline:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.btn-danger {
+  background: var(--danger-bg-dim);
+  color: var(--danger-color);
+  border: 1px solid var(--danger-border);
+}
+.btn-danger:hover:not(:disabled) {
+  background: var(--danger-bg-hover);
+  border-color: var(--c-primary-light);
+  color: #FFFFFF;
+}
+
+.btn-primary {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 18px;
+  border-radius: var(--radius-md);
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--btn-primary-hover-bg);
+  transform: translateY(-1px);
+}
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+.btn-primary svg { width: 16px; height: 16px; }
+
+/* Botón ZIP */
+.btn-outline-ig {
+  background: rgba(225, 29, 72, 0.08);
+  color: var(--btn-zip-text);
+  border: 1.5px solid var(--btn-zip-border);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  transition: all var(--t-fast);
+}
+.btn-outline-ig:hover:not(:disabled) {
+  background: var(--btn-zip-hover-bg);
+  border-color: var(--c-primary-light);
+  color: #FFFFFF;
+}
+.btn-outline-ig svg { width: 15px; height: 15px; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   IMAGE GRID
+══════════════════════════════════════════════════════════════════════════ */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 12px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  max-height: 390px;
+  background: var(--bg-main);
+}
+
+/* ── Image Card ────────────────────────────────────────────────────────── */
+.img-card {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--bg-card);
+  border: 1.5px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  transition: border-color var(--t-fast), transform var(--t-std), box-shadow var(--t-std);
+}
+.img-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(225, 29, 72, 0.40);
+}
+.img-card.selected {
+  border-color: var(--c-primary-light);
+  box-shadow: var(--shadow-card-sel);
+}
+.img-card.selected::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--card-overlay-selected);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* Imagen dentro de la card */
+.img-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: opacity var(--t-std);
+}
+.img-card img[data-loading] { opacity: 0; }
+.img-card img.loaded { opacity: 1; }
+
+/* Checkmark overlay */
+.card-check {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(18, 19, 25, 0.85);
+  border: 2px solid var(--card-check-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--t-fast), border-color var(--t-fast);
+  z-index: 3;
+}
+.img-card.selected .card-check {
+  background: var(--c-primary);
+  border-color: transparent;
+}
+.card-check svg {
+  width: 11px;
+  height: 11px;
+  opacity: 0;
+  transition: opacity var(--t-fast);
+  color: var(--text-inverse);
+}
+.img-card.selected .card-check svg { opacity: 1; }
+
+/* Open button (aparece en hover) */
+.card-open {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  background: var(--card-open-btn-bg);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--card-open-btn-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  cursor: pointer;
+  color: var(--text-inverse);
+  z-index: 4;
+}
+.img-card:hover .card-open { opacity: 1; }
+.card-open:hover { background: rgba(225, 29, 72, 0.50); }
+.card-open svg { width: 13px; height: 13px; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   EMPTY STATE
+══════════════════════════════════════════════════════════════════════════ */
+.empty-state {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 44px 24px;
+  flex: 1;
+  text-align: center;
+}
+.empty-state.visible { display: flex; }
+
+.empty-state svg {
+  width: 80px;
+  height: 80px;
+  animation: floatAnim 3s ease-in-out infinite;
+}
+
+@keyframes floatAnim {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-7px); }
+}
+
+.empty-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.2px;
+}
+.empty-sub {
+  font-size: 12px;
+  color: var(--text-secondary);
+  max-width: 250px;
+  line-height: 1.6;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════════════════════════════════ */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--bg-footer);
+  border-top: 1px solid var(--c-dark-card-hover);
+  flex-shrink: 0;
+}
+
+.footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.selection-info {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   TOAST NOTIFICATION
+══════════════════════════════════════════════════════════════════════════ */
+.toast {
+  position: fixed;
+  bottom: 70px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--success-bg-toast);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 9px 18px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms, transform 200ms;
+  z-index: 999;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.70);
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.toast.success { border-color: var(--success-border-toast); color: var(--success-color); }
+.toast.error   { border-color: var(--danger-border); color: var(--danger-color); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   LOADING SHIMMER (skeleton)
+══════════════════════════════════════════════════════════════════════════ */
+.shimmer {
+  background: #232532;
+  animation: shimmerPulse 1.4s ease-in-out infinite;
+}
+@keyframes shimmerPulse {
+  0%, 100% { opacity: 0.45; }
+  50%      { opacity: 0.90; }
+}
