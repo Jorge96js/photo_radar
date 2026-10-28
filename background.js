@@ -282,6 +282,18 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       return true;
     }
 
+    // Desde popup: abrir panel lateral nativo si se solicita vía mensaje
+    case 'OPEN_SIDE_PANEL': {
+      if (chrome.sidePanel && typeof chrome.sidePanel.open === 'function' && message.windowId) {
+        chrome.sidePanel.open({ windowId: message.windowId })
+          .then(() => sendResponse({ ok: true }))
+          .catch((err) => sendResponse({ error: err.message }));
+        return true;
+      }
+      sendResponse({ ok: false });
+      return false;
+    }
+
     default:
       sendResponse({ error: 'Unknown message type' });
       return false;

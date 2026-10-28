@@ -498,3 +498,224 @@ body {
   0%, 100% { opacity: 0.45; }
   50%      { opacity: 0.90; }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   FILTER PANEL
+══════════════════════════════════════════════════════════════════════════ */
+.filter-panel {
+  display: none;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: var(--c-dark-card);
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+  animation: filterSlideIn 0.2s ease-out;
+}
+
+.filter-panel.visible {
+  display: flex;
+}
+
+@keyframes filterSlideIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.filter-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--c-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+}
+
+.filter-label svg {
+  width: 13px;
+  height: 13px;
+  color: var(--c-primary-light);
+}
+
+.filter-select {
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--c-text-bright);
+  background: var(--c-dark-card-hover);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 4px 24px 4px 8px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--t-fast), box-shadow var(--t-fast);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M3 5l3 3 3-3' stroke='%239CA3AF' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  background-size: 12px;
+}
+
+.filter-select:hover {
+  border-color: var(--border-hover);
+}
+
+.filter-select:focus {
+  border-color: var(--c-primary-light);
+  box-shadow: 0 0 0 2px rgba(225, 29, 72, 0.20);
+}
+
+.filter-select option {
+  background: var(--c-dark-card);
+  color: var(--c-text-bright);
+}
+
+/* Filter Info Group */
+.filter-group-info {
+  margin-left: auto;
+  gap: 8px;
+}
+
+.filter-active-tag {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--c-text-subtle);
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: transparent;
+  transition: all var(--t-fast);
+}
+
+.filter-active-tag.active {
+  color: var(--c-text-rose);
+  background: var(--c-primary-dark);
+  border: 1px solid rgba(225, 29, 72, 0.30);
+}
+
+.btn-filter-clear {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  border: none;
+  background: rgba(244, 63, 94, 0.10);
+  color: var(--danger-color);
+  cursor: pointer;
+  transition: all var(--t-fast);
+}
+
+.btn-filter-clear.visible {
+  display: flex;
+}
+
+.btn-filter-clear:hover {
+  background: rgba(244, 63, 94, 0.25);
+  color: #fff;
+}
+
+.btn-filter-clear svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Filters Toggle Active State */
+#btnToggleFilters.filter-active {
+  background: rgba(225, 29, 72, 0.14);
+  color: var(--c-text-rose);
+  border-color: rgba(225, 29, 72, 0.35);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   SIDE PANEL BUTTON
+══════════════════════════════════════════════════════════════════════════ */
+#btnSidePanel:hover {
+  background: rgba(225, 29, 72, 0.14);
+  color: var(--c-text-rose);
+  border-color: rgba(225, 29, 72, 0.35);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   HIDDEN CARD (filtered out)
+══════════════════════════════════════════════════════════════════════════ */
+.img-card.filter-hidden {
+  display: none !important;
+}
+
+/* Filter count badge on filter button */
+.filter-count-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--c-text-rose);
+  background: var(--c-primary-dark);
+  border-radius: 3px;
+  padding: 1px 5px;
+  margin-left: 2px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   NATIVE CHROME SIDE PANEL MODE
+   Adaptado para el panel lateral del navegador (cualquier ancho, alto 100vh)
+══════════════════════════════════════════════════════════════════════════ */
+html.sidepanel-root {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  overflow: hidden !important;
+}
+
+body.sidepanel-mode {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  overflow: hidden !important;
+}
+
+body.sidepanel-mode .grid-container {
+  flex: 1 1 auto;
+  max-height: none !important;
+  height: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
+  gap: 8px;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+body.sidepanel-mode .filter-panel {
+  padding: 8px 12px;
+}
+
+/* Fallback responsive cuando popup.html se abre en ventana amplia */
+@media (min-width: 501px) {
+  html:not(.sidepanel-root) {
+    width: 100%;
+    max-height: none;
+  }
+  body:not(.sidepanel-mode) {
+    max-height: none;
+    overflow: auto;
+  }
+  body:not(.sidepanel-mode) .grid-container {
+    max-height: none;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  }
+}
+
+

@@ -54,7 +54,20 @@
       </svg>
       Capturar
     </button>
+    <button class="btn btn-ghost btn-sm" id="btnToggleFilters" title="Filtros">
+      <svg viewBox="0 0 16 16" fill="none">
+        <path d="M1.5 3h13M4 8h8M6 13h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      Filtros
+    </button>
     <span class="toolbar-spacer"></span>
+    <button class="btn btn-ghost btn-sm" id="btnSidePanel" title="Abrir en el panel lateral del navegador">
+      <svg viewBox="0 0 16 16" fill="none">
+        <rect x="1.5" y="2" width="13" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/>
+        <line x1="9.5" y1="2" x2="9.5" y2="14" stroke="currentColor" stroke-width="1.3"/>
+        <path d="M12.5 6.5L11 8l1.5 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
     <button class="btn btn-danger btn-sm" id="btnDeleteSelected" title="Eliminar seleccionadas" disabled>
       <svg viewBox="0 0 16 16" fill="none"><path d="M6 2h4M2 4h12M5 4v9a1 1 0 001 1h4a1 1 0 001-1V4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
       Borrar
@@ -63,6 +76,42 @@
       <svg viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
       Limpiar
     </button>
+  </div>
+
+  <!-- ══════════════ FILTER PANEL ══════════════ -->
+  <div class="filter-panel" id="filterPanel">
+    <div class="filter-group">
+      <label class="filter-label" for="filterSize">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M2 3h12v10H2z" stroke="currentColor" stroke-width="1.3"/><path d="M5 13V10M11 3v3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M2 10h6M8 3h6" stroke="currentColor" stroke-width="1.3" stroke-dasharray="1.5 1.5"/></svg>
+        Tamaño
+      </label>
+      <select class="filter-select" id="filterSize">
+        <option value="all">Todas las dimensiones</option>
+        <option value="small">Pequeñas (&lt; 300px)</option>
+        <option value="medium">Medianas (300–800px)</option>
+        <option value="large">Grandes (800–1920px)</option>
+        <option value="xlarge">Muy grandes (&gt; 1920px)</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label class="filter-label" for="filterWeight">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M4 14V6l4-4 4 4v8z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M7 10h2M6 12h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Peso
+      </label>
+      <select class="filter-select" id="filterWeight">
+        <option value="all">Todos los pesos</option>
+        <option value="light">&lt; 50 KB</option>
+        <option value="medium">50 – 200 KB</option>
+        <option value="heavy">200 KB – 1 MB</option>
+        <option value="very-heavy">&gt; 1 MB</option>
+      </select>
+    </div>
+    <div class="filter-group filter-group-info">
+      <span class="filter-active-tag" id="filterActiveTag">Sin filtros</span>
+      <button class="btn-filter-clear" id="btnClearFilters" title="Quitar filtros">
+        <svg viewBox="0 0 14 14" fill="none"><path d="M3 3l8 8M11 3L3 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
   </div>
 
   <!-- ══════════════ GRID ══════════════ -->

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es" class="sidepanel-root">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Photo radar – Panel Lateral</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body class="sidepanel-mode">
+
+  <!-- ══════════════ HEADER ══════════════ -->
+  <header class="header">
+    <div class="header-brand">
+      <svg class="brand-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="2" y="2" width="20" height="20" rx="6" fill="#B11226"/>
+        <circle cx="12" cy="12" r="7.5" stroke="white" stroke-width="1.2" stroke-opacity="0.9"/>
+        <circle cx="12" cy="12" r="4.5" stroke="white" stroke-width="1" stroke-opacity="0.5"/>
+        <circle cx="12" cy="12" r="2" stroke="white" stroke-width="1" stroke-opacity="0.3"/>
+        <line x1="12" y1="4.5" x2="12" y2="19.5" stroke="white" stroke-width="1" stroke-opacity="0.4"/>
+        <line x1="4.5" y1="12" x2="19.5" y2="12" stroke="white" stroke-width="1" stroke-opacity="0.4"/>
+        <line x1="12" y1="12" x2="17.2" y2="6.8" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="16" cy="8" r="1" fill="white"/>
+      </svg>
+      <span class="brand-name">Photo radar</span>
+    </div>
+    <div class="header-meta">
+      <span class="badge" id="imgCount">0 imágenes</span>
+    </div>
+  </header>
+
+  <!-- ══════════════ TOOLBAR ══════════════ -->
+  <div class="toolbar">
+    <button class="btn btn-ghost btn-sm" id="btnSelectAll" title="Seleccionar todas">
+      <svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="3" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Todas
+    </button>
+    <button class="btn btn-ghost btn-sm" id="btnDeselectAll" title="Deseleccionar todas">
+      <svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="3" stroke="currentColor" stroke-width="1.5"/></svg>
+      Ninguna
+    </button>
+    <button class="btn btn-screenshot btn-sm" id="btnCaptureScreen" title="Capturar pantalla del sitio web">
+      <svg viewBox="0 0 16 16" fill="none">
+        <path d="M5.5 3L4 4.5H2.5A1.5 1.5 0 001 6v6a1.5 1.5 0 001.5 1.5h11A1.5 1.5 0 0015 12V6a1.5 1.5 0 00-1.5-1.5H12L10.5 3h-5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+        <circle cx="8" cy="8.5" r="2.5" stroke="currentColor" stroke-width="1.3"/>
+      </svg>
+      Capturar
+    </button>
+    <button class="btn btn-ghost btn-sm" id="btnToggleFilters" title="Filtros">
+      <svg viewBox="0 0 16 16" fill="none">
+        <path d="M1.5 3h13M4 8h8M6 13h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      Filtros
+    </button>
+    <span class="toolbar-spacer"></span>
+    <button class="btn btn-danger btn-sm" id="btnDeleteSelected" title="Eliminar seleccionadas" disabled>
+      <svg viewBox="0 0 16 16" fill="none"><path d="M6 2h4M2 4h12M5 4v9a1 1 0 001 1h4a1 1 0 001-1V4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Borrar
+    </button>
+    <button class="btn btn-outline btn-sm" id="btnClearAll" title="Limpiar toda la lista">
+      <svg viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Limpiar
+    </button>
+  </div>
+
+  <!-- ══════════════ FILTER PANEL ══════════════ -->
+  <div class="filter-panel" id="filterPanel">
+    <div class="filter-group">
+      <label class="filter-label" for="filterSize">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M2 3h12v10H2z" stroke="currentColor" stroke-width="1.3"/><path d="M5 13V10M11 3v3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M2 10h6M8 3h6" stroke="currentColor" stroke-width="1.3" stroke-dasharray="1.5 1.5"/></svg>
+        Tamaño
+      </label>
+      <select class="filter-select" id="filterSize">
+        <option value="all">Todas las dimensiones</option>
+        <option value="small">Pequeñas (&lt; 300px)</option>
+        <option value="medium">Medianas (300–800px)</option>
+        <option value="large">Grandes (800–1920px)</option>
+        <option value="xlarge">Muy grandes (&gt; 1920px)</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label class="filter-label" for="filterWeight">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M4 14V6l4-4 4 4v8z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M7 10h2M6 12h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Peso
+      </label>
+      <select class="filter-select" id="filterWeight">
+        <option value="all">Todos los pesos</option>
+        <option value="light">&lt; 50 KB</option>
+        <option value="medium">50 – 200 KB</option>
+        <option value="heavy">200 KB – 1 MB</option>
+        <option value="very-heavy">&gt; 1 MB</option>
+      </select>
+    </div>
+    <div class="filter-group filter-group-info">
+      <span class="filter-active-tag" id="filterActiveTag">Sin filtros</span>
+      <button class="btn-filter-clear" id="btnClearFilters" title="Quitar filtros">
+        <svg viewBox="0 0 14 14" fill="none"><path d="M3 3l8 8M11 3L3 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════ GRID ══════════════ -->
+  <main class="grid-container" id="imgGrid" role="list" aria-label="Imágenes detectadas">
+    <!-- Las tarjetas se insertan dinámicamente desde popup.js -->
+  </main>
+
+  <!-- ══════════════ EMPTY STATE ══════════════ -->
+  <div class="empty-state" id="emptyState" aria-live="polite">
+    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="40" cy="40" r="36" stroke="rgba(225, 29, 72, 0.25)" stroke-width="1.5" stroke-dasharray="4 4"/>
+      <rect x="22" y="28" width="36" height="28" rx="6" stroke="#9CA3AF" stroke-width="1.8" fill="rgba(26, 28, 36, 0.6)"/>
+      <circle cx="32" cy="36" r="3" fill="#E11D48"/>
+      <path d="M22 48l10-8 8 6 6-5 10 7" stroke="#9CA3AF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <p class="empty-title">Sin imágenes detectadas</p>
+    <p class="empty-sub">Navega por cualquier sitio web y las imágenes aparecerán aquí automáticamente.</p>
+  </div>
+
+  <!-- ══════════════════════ FOOTER (DESCARGA) ══════════════════════ -->
+  <footer class="footer" id="footer">
+    <span class="selection-info" id="selectionInfo">0 seleccionadas</span>
+    <div class="footer-actions">
+      <button class="btn btn-outline-ig" id="btnDownloadZip" disabled
+              title="Descargar seleccionadas como archivo .zip">
+        <svg viewBox="0 0 20 20" fill="none">
+          <rect x="3" y="2" width="14" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M8 2v4M12 2v4M8 6h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          <path d="M7 10h2v2H7zM11 10h2v2h-2zM7 14h2v2H7z" fill="currentColor" opacity="0.7"/>
+        </svg>
+        ZIP
+      </button>
+      <button class="btn btn-primary" id="btnDownload" disabled>
+        <svg viewBox="0 0 20 20" fill="none"><path d="M10 3v10M10 13l-3-3M10 13l3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 16h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Descargar
+      </button>
+    </div>
+  </footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>

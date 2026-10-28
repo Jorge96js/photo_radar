@@ -17,6 +17,9 @@ const images = new Map();
 /** @type {Set<string>} URLs actualmente seleccionadas */
 const selected = new Set();
 
+/** @type {Map<string, {width:number, height:number, fileSize:number}>} Metadatos de imagen para filtros */
+const imageMeta = new Map();
+
 /** @type {number} ID de la pestaña activa */
 let activeTabId = null;
 
@@ -134,11 +137,22 @@ function addCard(entry) {
     </a>
   `;
 
-  // Fade-in al cargar la imagen
+  // Fade-in al cargar la imagen + capturar metadatos de dimensiones
   const img = card.querySelector('img');
   img.addEventListener('load', () => {
     img.removeAttribute('data-loading');
     img.classList.add('loaded');
+    // Guardar dimensiones reales para filtros
+    const w = img.naturalWidth || entry.width || 0;
+    const h = img.naturalHeight || entry.height || 0;
+    const meta = imageMeta.get(url) || { width: 0, height: 0, fileSize: -1 };
+    meta.width = w;
+    meta.height = h;
+    imageMeta.set(url, meta);
+    // Estimar el peso del archivo (HEAD request, en segundo plano)
+    if (meta.fileSize === -1 && !url.startsWith('data:')) {
+      estimateFileSize(url);
+    }
   });
   img.addEventListener('error', () => {
     // Mostrar un placeholder degradado si la imagen no carga (CORS, etc.)
@@ -624,3 +638,216 @@ btnDownloadZip.addEventListener('click', downloadAsZip);
 
 // Actualizar UI inicial
 updateUI();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// FEATURE: Filtros por tamaño y peso
+// ═══════════════════════════════════════════════════════════════════════════
+
+const filterPanel      = document.getElementById('filterPanel');
+const btnToggleFilters = document.getElementById('btnToggleFilters');
+const filterSize       = document.getElementById('filterSize');
+const filterWeight     = document.getElementById('filterWeight');
+const filterActiveTag  = document.getElementById('filterActiveTag');
+const btnClearFilters  = document.getElementById('btnClearFilters');
+
+/**
+ * Estima el peso de un archivo de imagen usando fetch con rango limitado
+ * o HEAD request para obtener Content-Length.
+ * @param {string} url
+ */
+async function estimateFileSize(url) {
+  try {
+    // Intentar HEAD primero (más liviano)
+    const resp = await fetch(url, { method: 'HEAD', cache: 'no-store' });
+    const cl = resp.headers.get('content-length');
+    if (cl) {
+      const bytes = parseInt(cl, 10);
+      if (!isNaN(bytes)) {
+        const meta = imageMeta.get(url) || { width: 0, height: 0, fileSize: -1 };
+        meta.fileSize = bytes;
+        imageMeta.set(url, meta);
+        return;
+      }
+    }
+    // Fallback: GET completo para medir tamaño del blob
+    const resp2 = await fetch(url, { cache: 'no-store' });
+    const blob = await resp2.blob();
+    const meta = imageMeta.get(url) || { width: 0, height: 0, fileSize: -1 };
+    meta.fileSize = blob.size;
+    imageMeta.set(url, meta);
+  } catch (_) {
+    // No se pudo obtener; marcar como desconocido
+    const meta = imageMeta.get(url) || { width: 0, height: 0, fileSize: -1 };
+    meta.fileSize = 0;
+    imageMeta.set(url, meta);
+  }
+}
+
+/**
+ * Evalúa si una imagen pasa el filtro de tamaño (dimensiones).
+ * @param {string} url
+ * @param {string} sizeFilter
+ * @returns {boolean}
+ */
+function passesSizeFilter(url, sizeFilter) {
+  if (sizeFilter === 'all') return true;
+  const meta = imageMeta.get(url);
+  if (!meta || (meta.width === 0 && meta.height === 0)) return true; // sin datos → mostrar
+  const maxDim = Math.max(meta.width, meta.height);
+  switch (sizeFilter) {
+    case 'small':  return maxDim < 300;
+    case 'medium': return maxDim >= 300 && maxDim <= 800;
+    case 'large':  return maxDim > 800 && maxDim <= 1920;
+    case 'xlarge': return maxDim > 1920;
+    default: return true;
+  }
+}
+
+/**
+ * Evalúa si una imagen pasa el filtro de peso (tamaño de archivo).
+ * @param {string} url
+ * @param {string} weightFilter
+ * @returns {boolean}
+ */
+function passesWeightFilter(url, weightFilter) {
+  if (weightFilter === 'all') return true;
+  const meta = imageMeta.get(url);
+  if (!meta || meta.fileSize <= 0) return true; // sin datos → mostrar
+  const kb = meta.fileSize / 1024;
+  switch (weightFilter) {
+    case 'light':      return kb < 50;
+    case 'medium':     return kb >= 50 && kb <= 200;
+    case 'heavy':      return kb > 200 && kb <= 1024;
+    case 'very-heavy': return kb > 1024;
+    default: return true;
+  }
+}
+
+/**
+ * Aplica los filtros activos a todas las tarjetas del grid.
+ * Usa clases CSS para ocultar/mostrar sin alterar el DOM.
+ */
+function applyFilters() {
+  const sizeVal   = filterSize.value;
+  const weightVal = filterWeight.value;
+  const hasFilter = sizeVal !== 'all' || weightVal !== 'all';
+
+  let visibleCount = 0;
+  let totalCount = 0;
+
+  for (const card of imgGrid.querySelectorAll('.img-card')) {
+    const url = card.dataset.url;
+    totalCount++;
+    const show = passesSizeFilter(url, sizeVal) && passesWeightFilter(url, weightVal);
+    card.classList.toggle('filter-hidden', !show);
+    if (show) visibleCount++;
+  }
+
+  // Actualizar indicadores de filtro
+  if (hasFilter) {
+    filterActiveTag.textContent = `${visibleCount} de ${totalCount}`;
+    filterActiveTag.classList.add('active');
+    btnClearFilters.classList.add('visible');
+    btnToggleFilters.classList.add('filter-active');
+  } else {
+    filterActiveTag.textContent = 'Sin filtros';
+    filterActiveTag.classList.remove('active');
+    btnClearFilters.classList.remove('visible');
+    btnToggleFilters.classList.remove('filter-active');
+  }
+
+  // Mostrar/ocultar empty state según filtros
+  const allHidden = totalCount > 0 && visibleCount === 0;
+  emptyState.classList.toggle('visible', totalCount === 0 || allHidden);
+  if (allHidden) {
+    emptyState.querySelector('.empty-title').textContent = 'Sin resultados para estos filtros';
+    emptyState.querySelector('.empty-sub').textContent = 'Prueba con otros filtros o limpia los filtros activos.';
+  } else if (totalCount === 0) {
+    emptyState.querySelector('.empty-title').textContent = 'Sin imágenes detectadas';
+    emptyState.querySelector('.empty-sub').textContent = 'Navega por cualquier sitio web y las imágenes aparecerán aquí automáticamente.';
+  }
+  imgGrid.style.display = (totalCount > 0 && visibleCount > 0) ? 'grid' : 'none';
+}
+
+/** Toggle del panel de filtros */
+btnToggleFilters.addEventListener('click', () => {
+  filterPanel.classList.toggle('visible');
+});
+
+/** Cambio en filtro de tamaño */
+filterSize.addEventListener('change', applyFilters);
+
+/** Cambio en filtro de peso */
+filterWeight.addEventListener('change', applyFilters);
+
+/** Botón limpiar filtros */
+btnClearFilters.addEventListener('click', () => {
+  filterSize.value = 'all';
+  filterWeight.value = 'all';
+  applyFilters();
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// FEATURE: Abrir en panel lateral nativo del navegador (Chrome Side Panel API)
+// ═══════════════════════════════════════════════════════════════════════════
+
+const btnSidePanel = document.getElementById('btnSidePanel');
+
+/**
+ * Abre Photo radar en el panel lateral nativo del navegador (Chrome Side Panel).
+ * Utiliza la API oficial chrome.sidePanel.open() activada por gesto de usuario.
+ */
+async function openSidePanel() {
+  try {
+    if (typeof chrome !== 'undefined' && chrome.sidePanel && typeof chrome.sidePanel.open === 'function') {
+      const currentWindow = await chrome.windows.getCurrent();
+      await chrome.sidePanel.open({ windowId: currentWindow.id });
+      window.close(); // Cerrar el popup para transferir el foco al panel lateral
+      return;
+    }
+  } catch (err) {
+    console.warn('[Photo radar] chrome.sidePanel.open por windowId falló, intentando por tabId:', err);
+    try {
+      if (activeTabId && chrome.sidePanel && typeof chrome.sidePanel.open === 'function') {
+        await chrome.sidePanel.open({ tabId: activeTabId });
+        window.close();
+        return;
+      }
+    } catch (tabErr) {
+      console.error('[Photo radar] Error abriendo sidePanel:', tabErr);
+    }
+  }
+  showToast('Panel lateral no disponible en este navegador', 'error');
+}
+
+if (btnSidePanel) {
+  btnSidePanel.addEventListener('click', openSidePanel);
+}
+
+// ─── Soporte dinámico para panel lateral: cambiar de pestaña ───────────────
+if (typeof chrome !== 'undefined' && chrome.tabs && chrome.tabs.onActivated) {
+  chrome.tabs.onActivated.addListener(async (activeInfo) => {
+    // Si la página está corriendo como sidepanel, actualizar cuando el usuario navegue a otra pestaña
+    try {
+      const currentWin = await chrome.windows.getCurrent();
+      if (activeInfo.windowId !== currentWin.id) return;
+    } catch (_) {}
+
+    activeTabId = activeInfo.tabId;
+    images.clear();
+    selected.clear();
+    imageMeta.clear();
+    imgGrid.innerHTML = '';
+
+    const response = await sendMessage({ type: 'GET_IMAGES', tabId: activeTabId });
+    if (response?.images) {
+      for (const entry of response.images) {
+        images.set(entry.url, entry);
+      }
+    }
+    renderAll();
+    applyFilters();
+    updateUI();
+  });
+}
+
